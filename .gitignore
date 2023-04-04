@@ -1,0 +1,12 @@
+.idea/
+__pycache__
+lib/
+Scripts/
+share/
+build/
+pyvenv.cfg
+data/attachments/
+data/database/database.db
+data/database/database - Copy.db
+data/database/restore_dml.sql
+TestCode.py
