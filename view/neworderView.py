@@ -1,3 +1,4 @@
+import logging
 from tkinter import *
 from tkinter.ttk import Combobox
 from tkinter.filedialog import askopenfilename
@@ -143,6 +144,7 @@ class NewOrderView:
 
         # Triggers
         self.company_var.trace('w', self.on_company_selected)
+        self.project_var.trace('w', self.on_project_selected)
 
         # Column 1 (LHS)
         self.date_entry.place(x=120, y=20)
@@ -189,6 +191,20 @@ class NewOrderView:
             self.project_entry.config(state="readonly")
         # Trigger update on dropdown
         self.project_entry.current(0)
+
+    def on_project_selected(self, *arg):
+        selected_project_id = self.project_data[self.project_entry.current()][0]
+        try:
+            preferred_employee = self.controller.get_preferred_employee(selected_project_id)[0]
+            preferred_employee_id = preferred_employee[0]
+            for employee_id, employee in self.employee_data:
+                if employee_id == preferred_employee_id:
+                    list_element_index = employee_id
+                    break
+            self.employee_entry.current(list_element_index)
+        except Exception as e:
+            logging.critical(f"""Project id {selected_project_id} has no preferred
+             employee set. Presetting employee failed.""")
 
     def store_data(self):
         if self.error_label is not None:

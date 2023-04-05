@@ -683,10 +683,3 @@ class MainView:
 
     def delete_order(self, *args):
         self.app_controller.delete_order()
-
-#TODO: Find a way to sort comboboxes without messing up the indexes selected.
-#TODO: Make selecting a project preselects the default employee while making a new order.
-#TODO: Implement Add Employee
-#TODO: Add window to edit messages for each company.
-# (use text files and company ID)
-#TODO: Implement Export && Add Button to export

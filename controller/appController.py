@@ -13,7 +13,7 @@ from view.newsupervisorView import NewSupervisorView
 from view.newcompanyView import NewCompanyView
 from view.newprojectView import NewProjectView
 # Model
-from model.MainModel import MainModel
+from model.mainModel import MainModel
 from model.neworderModel import NewOrderModel
 from model.deleteorderModel import DeleteOrderModel
 from model.newsupervisorModel import NewSupervisorModel

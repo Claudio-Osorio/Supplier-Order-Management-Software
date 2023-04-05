@@ -31,3 +31,7 @@ class NewOrderModel:
     @staticmethod
     def get_all_types():
         return get_all_types()
+
+    @staticmethod
+    def get_preferred_employee(project_id):
+        return get_preferred_employee(project_id)

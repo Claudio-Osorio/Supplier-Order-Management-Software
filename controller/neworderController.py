@@ -27,6 +27,9 @@ class NewOrderController:
     def get_employees(self):
         return self.model.get_all_employees()
 
+    def get_preferred_employee(self, project_id):
+        return self.model.get_preferred_employee(project_id)
+
     def save_data(self,data):
         self.model.save_data(data)
 

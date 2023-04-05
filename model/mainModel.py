@@ -1,6 +1,5 @@
 import logging
 import os
-
 from helpers.composed_email import *
 from database import *
 import pythoncom, win32com.client, threading, time
