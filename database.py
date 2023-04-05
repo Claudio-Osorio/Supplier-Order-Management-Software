@@ -80,33 +80,19 @@ def execute_query(sql,*value):
     logging.info(f"Database: Query request elapsed time: {elapsed_time_ms:.2f} ms")
     return tables
 
-def get_employee(name):
-    sql = f"""
-    SELECT id, _name FROM employee
-    WHERE _name = ?
-    ;
-    """
-    return execute_query(sql, name)
-
 def get_name_of_all_employees():
     sql = f"""
-    SELECT employee.id, employee._name 
+    SELECT id, _name 
     FROM employee
+    ORDER BY _name
     """
     return execute_query(sql)
-
-
-def get_supervisor_by_name(name):
-    sql = f"""
-    SELECT * FROM supervisor
-    WHERE _name = ?
-    """
-    return execute_query(sql, name)
 
 # Returns list of tuples
 def get_name_of_all_supervisors():
     sql = f"""
     SELECT id, _name FROM supervisor
+    ORDER BY _name
     """
     return execute_query(sql)
 
@@ -114,14 +100,8 @@ def get_name_of_all_supervisors():
 def get_name_of_all_companies():
     sql = f"""
     SELECT id, _name FROM company
+    ORDER BY _name
     ;
-    """
-    return execute_query(sql)
-
-# Returns list of tuples
-def get_name_of_all_projects():
-    sql = f"""
-    SELECT id, _name FROM project
     """
     return execute_query(sql)
 
@@ -130,6 +110,7 @@ def get_all_projects(company_id):
     sql = f"""
     SELECT id, _name FROM project
     WHERE company_id = ?
+    ORDER BY _name
     """
     return execute_query(sql, company_id)
 

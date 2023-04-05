@@ -296,10 +296,6 @@ class MainModel:
         return get_name_of_all_companies()
 
     @staticmethod
-    def get_name_of_all_projects():
-        return get_name_of_all_projects()
-
-    @staticmethod
     def get_all_projects(company_id):
         return get_all_projects(company_id)
 
