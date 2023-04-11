@@ -197,11 +197,13 @@ class NewOrderView:
         try:
             preferred_employee = self.controller.get_preferred_employee(selected_project_id)[0]
             preferred_employee_id = preferred_employee[0]
+            index = -1
             for employee_id, employee in self.employee_data:
+                index += 1
                 if employee_id == preferred_employee_id:
                     list_element_index = employee_id
                     break
-            self.employee_entry.current(list_element_index)
+            self.employee_entry.current(index)
         except Exception as e:
             logging.critical(f"""Project id {selected_project_id} has no preferred
              employee set. Presetting employee failed.""")
@@ -369,14 +371,6 @@ class NewOrderView:
             data["_order.employee_id"] = employee_id
 
         # ATTACHMENT
-        # Place button where it should go on New Order window
-        # validate the file exists
-        # in the model copy the file to attachments folder with the name  {orderid - ordernumber}
-        # create alert when a file with the same name exists
-        # implement code to grab the file based on its name... rename to {ordernumber} before attaching
-        # create configuration  section, and accessor for attachment
-        # implement threading lock for each file
-        # finish threading each email
         attch = self.attachment_entry.get()
         if attch != 'None' and not blank_input(attch) and \
             os.path.exists(attch):

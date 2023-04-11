@@ -3,6 +3,7 @@ from controller.mainController import MainController
 from controller.neworderController import NewOrderController
 from controller.deleteorderController import DeleteOrderController
 from controller.newsupervisorController import NewSupervisorController
+from controller.newemployeeController import NewEmployeeController
 from controller.newcompanyController import NewCompanyController
 from controller.newprojectController import NewProjectController
 # View
@@ -10,6 +11,7 @@ from view.mainView import MainView
 from view.neworderView import NewOrderView
 from view.deleteorderView import DeleteOrderView
 from view.newsupervisorView import NewSupervisorView
+from view.newemployeeView import NewEmployeeView
 from view.newcompanyView import NewCompanyView
 from view.newprojectView import NewProjectView
 # Model
@@ -17,6 +19,7 @@ from model.mainModel import MainModel
 from model.neworderModel import NewOrderModel
 from model.deleteorderModel import DeleteOrderModel
 from model.newsupervisorModel import NewSupervisorModel
+from model.newemployeeModel import NewEmployeeModel
 from model.newcompanyModel import NewCompanyModel
 from model.newprojectModel import NewProjectModel
 
@@ -29,7 +32,7 @@ class AppController:
         self.main_controller = None
         self.new_order_controller = None
         self.delete_order_controller = None
-        self.employee_controller = None
+        self.new_employee_controller = None
         self.new_supervisor_controller = None
         self.new_company_controller = None
         self.new_project_controller = None
@@ -102,10 +105,14 @@ class AppController:
         pass
 
     def new_employee(self):
-        self.model.new_employee()
+        self.new_employee_controller = NewEmployeeController(self.root,
+                                               NewEmployeeModel,
+                                               NewEmployeeView,
+                                               self)
+        self.new_employee_controller.show_ui()
 
     def update_employee(self):
-        self.model.update_employee()
+        pass
 
     def delete_employee(self):
         pass

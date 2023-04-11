@@ -85,11 +85,11 @@ class ComposedEmail:
             # Enter order stuff
             age = calculate_age(order["_order._date"])
             row =f"""  <tr>
-                            <td>{order["order_type._type"]}:
+                            <td>{order["order_type._type"]} ID: 
                             {order["_order.id"]}</td>
                             <td>{order["_order._date"]}</td>
                             <td>{order["_order.order_number"]}</td>
-                            <td>{order["community._name"]}</td>"""
+                            <td>{order["project._name"]}</td>"""
             if order["_order.full_address"]:
                 row += f""" <td>
                                 <table style="width:100%">

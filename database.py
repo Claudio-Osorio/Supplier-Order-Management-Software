@@ -171,6 +171,8 @@ def store_new_order(data):
     c.execute(sql,values)
     new_order_id = c.lastrowid
     conn.commit()
+    logging.info(f"""Database: New order inserted - """
+                 f"""New Order Id:{new_order_id}""")
 
     src = data['attachment_path']
     filename = str(new_order_id) + '-' + \
@@ -201,22 +203,40 @@ def store_new_supervisor(data):
     c.execute(sql, values)
     conn.commit()
     conn.close()
+    logging.info(f"""Database: New supervisor inserted - """
+                 f"""{data["name"]}""")
 
-def store_new_company(company_name):
+def store_new_employee(data):
+    conn, c = create_transaction()
+    sql = """INSERT INTO employee (_name, phone_number, email)
+     VALUES (?, ?, ?)"""
+    values = (data["name"],
+              data["phone"],
+              data["email"])
+    c.execute(sql, values)
+    new_employee_id = c.lastrowid
+    conn.commit()
+    conn.close()
+    logging.info(f"""Database: New employee inserted - """
+                 f"""{data["name"]}""")
+    return new_employee_id
+
+def store_new_company(data):
     conn, c = create_transaction()
     sql = """INSERT INTO company (_name)
     VALUES(?)
     """
-    values = (company_name["_name"],)
+    values = (data["_name"],)
     c.execute(sql, values)
     new_company_id = c.lastrowid
     conn.commit()
     conn.close()
+    logging.info(f"""Database: New company inserted - """
+                 f"""{data["_name"]}""")
     return new_company_id
 
 def store_new_division(company_id, data):
     conn, c = create_transaction()
-
     sql = """INSERT INTO division (_name, location,
      accounts_payable_name, accounts_payable_email)
      VALUES (?,?,?,?)"""
@@ -226,6 +246,8 @@ def store_new_division(company_id, data):
               data["division.accounts_payable_name"],
               data["division.accounts_payable_email"])
     c.execute(sql, values)
+    logging.info(f"""Database: New division inserted - """
+                 f"""{data["division._name"]}""")
     new_division_id = c.lastrowid
 
     sql = """INSERT INTO company_division (company_id,
@@ -235,6 +257,8 @@ def store_new_division(company_id, data):
     c.execute(sql, values)
     conn.commit()
     conn.close()
+    logging.info(f"Database: New company, division inserted -"
+                 f" {company_id}, {new_division_id}")
     return new_division_id
 
 def store_new_project(data):
@@ -256,9 +280,23 @@ def store_new_project(data):
     values = (new_project_id, data["employee.id"])
     c.execute(sql, values)
     conn.commit()
-    logging.info(f"Database: New preferred project-employee inserted - {values[0]},{values[1]}")
+    logging.info(f"Database: New preferred project-employee"
+                 f" inserted - {values[0]},{values[1]}")
     conn.close()
     return new_project_id
+
+def store_new_preferred_employee(employee_id, list_projects):
+    conn, c = create_transaction()
+    for project_id in list_projects:
+        sql = """INSERT INTO preferred_project_employee (project_id, employee_id)
+        VALUES(?,?)
+        """
+        values = (project_id, employee_id)
+        c.execute(sql, values)
+        logging.info(f"Database: New preferred project-employee inserted"
+                     f" - {project_id},{employee_id}")
+    conn.commit()
+    conn.close()
 
 def get_all_divisions(company_id):
     sql = """SELECT division.id, division._name
@@ -276,4 +314,15 @@ def delete_order(order_id):
     c.execute(sql, (order_id,))
     conn.commit()
     conn.close()
-    logging.info(f"Order Id:{order_id} - Successfully deleted")
+    logging.info(f"Database: Order Id:{order_id} - Successfully deleted")
+
+def delete_preferred_employee(list_projects):
+    conn = create_connection()
+    c = conn.cursor()
+    for project_id in list_projects:
+        sql = """DELETE FROM preferred_project_employee
+        WHERE project_id = ?"""
+        c.execute(sql, (project_id,))
+        logging.info(f"Database: Project Id:{project_id} preferred employee has been deleted")
+    conn.commit()
+    conn.close()

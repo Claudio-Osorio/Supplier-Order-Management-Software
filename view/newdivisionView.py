@@ -1,4 +1,4 @@
-import tkinter as tk
+from tkinter import *
 from input_validation import *
 
 class NewDivisionView:
@@ -13,33 +13,33 @@ class NewDivisionView:
         self.error_label = None
 
     def show_ui(self):
-        self.win = tk.Toplevel(self.root)
+        self.win = Toplevel(self.root)
         self.win.geometry("400x330+760+380")
         self.win.resizable(False, False)
         self.win.attributes("-toolwindow", 1)
         self.win.grab_set()
         self.win.title("New Division")
 
-        tk.Label(self.win, text="Division", font='Arial 12 bold'). \
+        Label(self.win, text="Division", font='Arial 12 bold'). \
             place(x=20, y=20)
-        tk.Label(self.win, text="Name:", font='Arial 12 normal'). \
+        Label(self.win, text="Name:", font='Arial 12 normal'). \
             place(x=20, y=50)
-        tk.Label(self.win, text="Location:", font='Arial 12 normal'). \
+        Label(self.win, text="Location:", font='Arial 12 normal'). \
             place(x=20, y=80)
-        tk.Label(self.win, text="Accounts Payable", font='Arial 12 bold'). \
+        Label(self.win, text="Accounts Payable", font='Arial 12 bold'). \
             place(x=20, y=110)
-        tk.Label(self.win, text="Name:", font='Arial 12 normal'). \
+        Label(self.win, text="Name:", font='Arial 12 normal'). \
             place(x=20, y=140)
-        tk.Label(self.win, text="Email:", font='Arial 12 normal'). \
+        Label(self.win, text="Email:", font='Arial 12 normal'). \
             place(x=20, y=170)
 
-        self.name_entry = tk.Entry(self.win, bd=2, width=25,
+        self.name_entry = Entry(self.win, bd=2, width=25,
                                    font='Arial 12 normal')
-        self.location_entry = tk.Entry(self.win, bd=2, width=25,
+        self.location_entry = Entry(self.win, bd=2, width=25,
                            font='Arial 12 normal')
-        self.accounts_name_entry = tk.Entry(self.win, bd=2, width=25,
+        self.accounts_name_entry = Entry(self.win, bd=2, width=25,
                            font='Arial 12 normal')
-        self.accounts_email_entry = tk.Entry(self.win, bd=2, width=25,
+        self.accounts_email_entry = Entry(self.win, bd=2, width=25,
                            font='Arial 12 normal')
 
         self.name_entry.place(x=100, y=50)
@@ -47,11 +47,11 @@ class NewDivisionView:
         self.accounts_name_entry.place(x=100, y=140)
         self.accounts_email_entry.place(x=100, y=170)
 
-        btn_save = tk.Button(self.win, text="Save",
+        btn_save = Button(self.win, text="Save",
                              font=("Arial", 14), height=1, width=11)
         btn_save.configure(command=self.store_data)
 
-        btn_cancel = tk.Button(self.win, text="Cancel",
+        btn_cancel = Button(self.win, text="Cancel",
                                font=("Arial", 14), height=1, width=11)
         btn_cancel.configure(command=self.exit_window)
 
@@ -112,7 +112,7 @@ class NewDivisionView:
             valid_record = False
 
         if not valid_record:
-            self.error_label = tk.Label(self.win, text=error_msg,
+            self.error_label = Label(self.win, text=error_msg,
                                         justify="left", fg="red",
                                         font='Arial 8 bold')
             self.error_label.place(x=20, y=200)
