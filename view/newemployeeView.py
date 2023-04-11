@@ -2,15 +2,21 @@ from tkinter import *
 from tkinter import ttk
 from input_validation import validate_email,validate_phone,\
     validate_by_regex, blank_input
+
 class NewEmployeeView:
     def __init__(self, root, controller):
         self.root = root
         self.controller = controller
         self.win = None
 
+        self.frame_all_projects = None
+        self.frame_employee_projects = None
         self.name_entry = None
         self.phone_entry = None
         self.email_entry = None
+
+        self.all_projects_scrollbar = None
+        self.employee_projects_scrollbar = None
 
         self.employee_projects_listbox = None
         self.projects_listbox = None
@@ -29,6 +35,15 @@ class NewEmployeeView:
         self.win.attributes("-toolwindow", 1)
         self.win.grab_set()
         self.win.title("Add New Employee")
+
+        self.frame_all_projects = Frame(self.win, width=330, height=300)
+        self.frame_employee_projects = Frame(self.win, width=330, height=300)
+
+        self.frame_all_projects.place(x=20, y=135)
+        self.frame_employee_projects.place(x=450, y=135)
+
+        self.frame_all_projects.pack_propagate(False)
+        self.frame_employee_projects.pack_propagate(False)
 
         label_font = 'Arial 12 bold'
         Label(self.win, text="Name:", font=label_font).\
@@ -57,20 +72,29 @@ class NewEmployeeView:
         self.all_projects_data = self.controller.get_companies_and_projects()
         self.all_projects_items = Variable(value=tuple(row[1] for row in self.all_projects_data))
 
-        self.all_projects_listbox = Listbox(self.win, selectmode=EXTENDED,
+        self.all_projects_listbox = Listbox(self.frame_all_projects,
+                                    selectmode=EXTENDED,
                                     font=entry_font,
-                                    width=36, height=16,
-                                    selectborderwidth=0,
                                     listvariable=self.all_projects_items)
 
-        self.employee_projects_listbox = Listbox(self.win, selectmode=SINGLE,
-                                    width=36, height=16,
+        self.employee_projects_listbox = Listbox(self.frame_employee_projects,
+                                    selectmode=SINGLE,
                                     font=entry_font,
-                                    selectborderwidth=0,
                                     listvariable=self.employee_projects_items)
 
-        self.all_projects_listbox.place(x=20, y=135)
-        self.employee_projects_listbox.place(x=450, y=135)
+        self.all_projects_listbox.pack(side=LEFT, fill=BOTH, expand=True)
+        self.employee_projects_listbox.pack(side=LEFT, fill=BOTH, expand=True)
+
+        self.all_projects_scrollbar = Scrollbar(self.frame_all_projects,
+                        orient=VERTICAL, command=self.all_projects_listbox.yview)
+        self.all_projects_listbox.config(yscrollcommand=self.all_projects_scrollbar.set)
+        self.all_projects_scrollbar.pack(side=RIGHT, fill=Y)
+
+        self.employee_projects_scrollbar = Scrollbar(self.frame_employee_projects,
+                        orient=VERTICAL, command=self.employee_projects_listbox.yview)
+        self.employee_projects_scrollbar.pack(side=RIGHT, fill=Y)
+        self.employee_projects_listbox.config(yscrollcommand=\
+                                             self.employee_projects_scrollbar.set)
 
         # Buttons
         button_font = ("Arial", 12)
@@ -151,7 +175,7 @@ class NewEmployeeView:
         if not valid_record:
             self.error_label = Label(self.win, text=error_msg,
                                      justify="left", fg="red", font='Arial 8 bold')
-            self.error_label.place(x=27, y=380)
+            self.error_label.place(x=27, y=450)
             return False
         if len(self.employee_projects_tracking) == 0:
             data["projects"] = None
