@@ -13,7 +13,6 @@ class DeleteOrderController:
         list_orders = list()
         for _id in orders_id:
             list_orders.append(get_order_by_id(_id)[0])
-        print(list_orders)
         if self.confirm_deletion(list_orders):
             self.model.delete_orders(list_orders)
             self.refresh_orders()

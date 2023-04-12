@@ -14,7 +14,7 @@ class AppView:
         geometry = read_mw_geometry()
         self.root.geometry(f'{geometry}')
         self.root.minsize(1645,600)
-        self.root.title('Supplier Order Management Software' + read_version())
+        self.root.title('Supplier Order Management Software ' + read_version())
         self.root.config(bg='#000000')
 
         # DATA Menu
@@ -24,13 +24,6 @@ class AppView:
                               command=self.controller.import_excel_file)
         self.data_menu.add_command(label="Export to Excel File",
                               command=self.controller.export_to_excel_file)
-        self.data_menu.add_separator()
-        self.data_menu.add_command(label="Reload Missing Attachments",
-                              command=self.controller.reload_all_attachments)
-        self.data_menu.add_command(label="Reload All Attachments",
-                              command=self.controller.reload_all_attachments)
-        self.data_menu.add_command(label="Load Attachment Folder",
-                              command=self.controller.load_attachment_folder)
         self.data_menu.add_separator()
         self.data_menu.add_command(label="Exit",
                               command=self.root.quit)
@@ -58,8 +51,6 @@ class AppView:
                                   command=self.controller.update_employee)
         self.editmenu.add_command(label="Delete Employee",
                                   command=self.controller.delete_employee)
-        self.editmenu.add_command(label="Edit Employee Projects",
-                                  command=self.controller.edit_employee_projects)
         self.editmenu.add_separator()
         self.editmenu.add_command(label="New Company",
                              command=self.controller.new_company)
@@ -88,7 +79,8 @@ class AppView:
         # HELP Menu
         self.helpmenu = tk.Menu(self.menubar, tearoff=0)
         self.helpmenu.add_command(label="Help Index")
-        self.helpmenu.add_command(label="About...")
+        self.helpmenu.add_command(label="About...",
+                                  command=self.controller.about)
         self.menubar.add_cascade(label="Help", menu=self.helpmenu)
         self.root.config(menu=self.menubar)
 

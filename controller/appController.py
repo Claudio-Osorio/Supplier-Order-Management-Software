@@ -7,6 +7,7 @@ from controller.newemployeeController import NewEmployeeController
 from controller.newcompanyController import NewCompanyController
 from controller.newprojectController import NewProjectController
 # View
+from view.aboutView import AboutView
 from view.mainView import MainView
 from view.neworderView import NewOrderView
 from view.deleteorderView import DeleteOrderView
@@ -39,6 +40,9 @@ class AppController:
 
     def validate_database(self):
         self.model.validate_database()
+
+    def about(self):
+        AboutView.show_ui(self)
 
     def show_main_ui(self):
         self.main_controller = MainController(self.root,
@@ -88,15 +92,6 @@ class AppController:
     def export_to_excel_file(self):
         self.model.export_to_excel_file()
 
-    def reload_missing_attachments(self):
-        self.model.reload_missing_attachments()
-
-    def reload_all_attachments(self):
-        self.model.reload_all_attachments()
-
-    def load_attachment_folder(self):
-        self.model.load_attachment_folder()
-
     def new_supervisor(self):
         self.new_supervisor_controller = NewSupervisorController(self.root,
                                              NewSupervisorModel,
@@ -123,9 +118,6 @@ class AppController:
     def delete_employee(self):
         pass
 
-    def edit_employee_projects(self):
-        self.model.edit_employee_projects()
-
     def new_company(self):
         self.new_company_controller = NewCompanyController(self.root,
                                              NewCompanyModel,
@@ -134,7 +126,7 @@ class AppController:
         self.new_company_controller.show_ui()
 
     def update_company(self):
-        self.model.update_company()
+        pass
 
     def delete_company(self):
         pass
