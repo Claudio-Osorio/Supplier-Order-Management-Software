@@ -5,14 +5,27 @@ class NewOrderController:
         self.view = view(root, self)
         self.app_controller = app_controller
 
-    def show_new_order_ui(self):
-        self.view.show_add_new_order()
+    def show_ui(self):
+        self.view.show_ui()
+
+    def update(self, order_id):
+        self.view.show_ui()
+        self.view.prefill_data(order_id)
 
     def refresh_orders(self):
         self.app_controller.refresh_view()
 
+    def get_order(self, order_id):
+        return self.model.get_order(order_id)
+
+    def get_dict_order_by_id(self, order_id):
+        return self.model.get_dict_order_by_id(order_id)
+
     def get_companies(self):
         return self.model.get_name_of_all_companies()
+
+    def get_company_from_project_id(self, project_id):
+        return self.model.get_company_from_project_id(project_id)
 
     def get_projects_for_company(self, company_id):
         return self.model.\

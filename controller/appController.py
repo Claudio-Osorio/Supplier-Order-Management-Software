@@ -62,10 +62,16 @@ class AppController:
                                             NewOrderModel,
                                             NewOrderView,
                                             self)
-        self.new_order_controller.show_new_order_ui()
+        self.new_order_controller.show_ui()
 
     def update_order(self):
-        pass
+        orders_id = self.main_controller.get_selected_orders()
+        for order_id in orders_id:
+            self.new_order_controller = NewOrderController(self.root,
+                                                           NewOrderModel,
+                                                           NewOrderView,
+                                                           self)
+            self.new_order_controller.update(order_id)
 
     def delete_order(self):
         orders_id = self.main_controller.get_selected_orders()

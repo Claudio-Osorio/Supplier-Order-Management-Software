@@ -105,6 +105,18 @@ def get_name_of_all_companies():
     """
     return execute_query(sql)
 
+def get_company_from_project_id(project_id):
+    sql = f"""
+    SELECT company.id, company._name FROM company
+    INNER JOIN company_division d
+    ON company.id = d.company_id
+    INNER JOIN project p
+    ON d.company_id = p.company_id
+    WHERE p.id = ?
+    ;
+    """
+    return execute_query(sql, project_id)
+
 # Returns list of tuples
 def get_all_projects(company_id):
     sql = f"""
@@ -120,6 +132,22 @@ def get_order_by_id(_id):
     WHERE id = ?
     """
     return execute_query(sql, _id)
+
+def get_dict_order_by_id(_id):
+    conn = create_connection()
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
+    sql = f"""
+    SELECT * FROM _order
+    WHERE id = ?
+    """
+    c.execute(sql, (_id,))
+    rows = c.fetchall()
+    result = []
+    for row in rows:
+        row_dict = dict(row)
+        result.append(row_dict)
+    return result
 
 def get_all_order_status():
     sql = f"""
@@ -156,25 +184,25 @@ def store_new_order(data):
                     external_tracking)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """
-    values = (data["_order._date"],
-            data["_order.supervisor_id"],
-            data["_order.employee_id"],
-            data["_order.status"],
-            data["_order.project_id"],
-            data["_order.order_number"],
-            data["_order.unit_address"],
-            data["_order.full_address"],
-            data["_order._type"],
-            data["_order.amount"],
-            data["_order.note"],
-            data["_order.external_tracking"])
+    values = (data["_date"],
+            data["supervisor_id"],
+            data["employee_id"],
+            data["_status_id"],
+            data["project_id"],
+            data["order_number"],
+            data["unit_address"],
+            data["full_address"],
+            data["_type_id"],
+            data["amount"],
+            data["note"],
+            data["external_tracking"])
     c.execute(sql,values)
     new_order_id = c.lastrowid
     conn.commit()
     logging.info(f"""Database: New order inserted - """
                  f"""New Order Id:{new_order_id}""")
 
-    src = data['attachment_path']
+    src = data['attachment_name']
     filename = str(new_order_id) + '-' + \
                str(data['_order.order_number']) + \
                '.pdf'
@@ -324,5 +352,33 @@ def delete_preferred_employee(list_projects):
         WHERE project_id = ?"""
         c.execute(sql, (project_id,))
         logging.info(f"Database: Project Id:{project_id} preferred employee has been deleted")
+    conn.commit()
+    conn.close()
+
+def update_new_order(order_id, data):
+    conn = create_connection()
+    c = conn.cursor()
+    for column, new_value in data.items():
+        sql = f"""UPDATE _order SET {column} = ?
+        WHERE id = {order_id}
+        AND {column} != ?"""
+        values = (new_value, order_id, new_value)
+
+        if column == 'attachment_name':
+            src = data['attachment_name']
+            filename = str(order_id) + '-' + \
+                       str(data['order_number']) + \
+                       '.pdf'
+            dst = os.getcwd() + \
+                  read_attachment_partial_path() + \
+                  filename
+            copied = shutil.copy2(src, dst)
+            if not copied:
+                logging.critical(f"""Database: Order Id:{order_id}
+                 - Failed to replace/update attachment_name.""")
+                conn.close()
+                return
+        c.execute(sql, values)
+        logging.info(f"Database: Order Id: {order_id} Updated {column}")
     conn.commit()
     conn.close()

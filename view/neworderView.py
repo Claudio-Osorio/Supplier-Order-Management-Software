@@ -49,7 +49,8 @@ class NewOrderView:
 
         self.error_label = None
 
-    def show_add_new_order(self):
+
+    def show_ui(self):
         self.win = Toplevel(self.root)
         self.win.geometry("800x550+550+280")
         self.win.resizable(False, False)
@@ -231,7 +232,7 @@ class NewOrderView:
         elif validate_date(date):
             date = datetime.datetime.strptime(
                 date, '%m/%d/%Y').strftime('%Y-%m-%d')
-            data["_order._date"] = date
+            data["_date"] = date
         else:
             error_msg += "*The Date entered is invalid\n"
             valid_record = False
@@ -246,7 +247,7 @@ class NewOrderView:
             error_msg += "*A Status must be selected\n"
             valid_record = False
         else:
-            data["_order.status"] = status
+            data["_status_id"] = status
 
         # COMPANY
         try:
@@ -258,8 +259,6 @@ class NewOrderView:
         except (TypeError, ValueError, KeyError, IndexError):
             error_msg += "*A Company must be selected\n"
             valid_record = False
-        else:
-            data["company.id"] = company_id
 
         # PROJECT
         try:
@@ -272,7 +271,7 @@ class NewOrderView:
             error_msg += "*A Project must be selected\n"
             valid_record = False
         else:
-            data["_order.project_id"] = project_id
+            data["project_id"] = project_id
 
         # LOT/BLK
         lotblk = self.lotblk_entry.get()
@@ -284,21 +283,21 @@ class NewOrderView:
         else:
             if not blank_input(lotblk):
                 if validate_by_regex(lotblk, r"^[a-zA-Z0-9\s\/]*"):
-                        data["_order.unit_address"] = str(lotblk)
+                        data["unit_address"] = str(lotblk)
                 else:
                     error_msg += "*The Lot/Blk field cannot contain special characters\n"
                     valid_record = False
             else:
-                data["_order.unit_address"] = None
+                data["unit_address"] = None
 
             if not blank_input(address):
                 if validate_address(address):
-                    data["_order.full_address"] = str(address)
+                    data["full_address"] = str(address)
                 else:
                     error_msg += "*The Address field cannot contain special characters\n"
                     valid_record = False
             else:
-                data["_order.full_address"] = None
+                data["full_address"] = None
 
         # AMOUNT
         amount = self.amount_entry.get()
@@ -309,7 +308,7 @@ class NewOrderView:
                 if validate_amount(amount):
                     amount = re.sub(r',','',self.amount_entry.get())
                     amount = int(float(amount) * 100.00)
-                    data["_order.amount"] = amount
+                    data["amount"] = amount
                 else:
                     raise ValueError
             except ValueError:
@@ -324,7 +323,7 @@ class NewOrderView:
         else:
             try:
                 if validate_all_numbers(order):
-                    data["_order.order_number"] = int(order)
+                    data["order_number"] = int(order)
                 else:
                     raise ValueError
             except ValueError:
@@ -342,7 +341,7 @@ class NewOrderView:
             error_msg += "*An Order Type must be selected\n"
             valid_record = False
         else:
-            data["_order._type"] = type_id
+            data["_type_id"] = type_id
 
         # SUPERVISOR
         try:
@@ -355,7 +354,7 @@ class NewOrderView:
             error_msg += "*A Supervisor must be selected\n"
             valid_record = False
         else:
-            data["_order.supervisor_id"] = supervisor_id
+            data["supervisor_id"] = supervisor_id
 
         # EMPLOYEE
         try:
@@ -368,18 +367,17 @@ class NewOrderView:
             error_msg += "*A Employee must be selected\n"
             valid_record = False
         else:
-            data["_order.employee_id"] = employee_id
+            data["employee_id"] = employee_id
 
         # ATTACHMENT
         attch = self.attachment_entry.get()
         if attch != 'None' and not blank_input(attch) and \
             os.path.exists(attch):
-            data["attachment_path"] = attch
+            data["attachment_name"] = attch
         else:
             self.attachment_entry.insert(0, "None")
             error_msg += "*An attachment must be imported"
             valid_record = False
-
         if not valid_record:
             self.error_label = Label(self.win, text=error_msg,
                             justify="left", fg="red", font='Arial 8 bold')
@@ -398,6 +396,88 @@ class NewOrderView:
             self.attachment_entry.insert(0, attachment_path)
             self.attachment_entry.xview_moveto(1.0)
             self.attachment_entry.config(state="readonly")
+
+
+    def prefill_data(self, order_id):
+        self.win.title("Update Order")
+        data = self.controller.get_dict_order_by_id(order_id)
+        data = data[0]
+        stored_date = datetime.datetime.\
+            strptime(data['_date'], '%Y-%m-%d').date()
+        self.date_entry.set_date(stored_date)
+
+        # TYPE
+        type_id = data['_type_id']
+        for index, value in enumerate(self.type_data):
+            if value[0] == type_id:
+                self.type_entry.current(index)
+                break
+        else:
+            logging.critical(f"""Modify Order: _type_id:{type_id} 
+            does not exist""")
+
+        company = self.controller.get_company_from_project_id(data['project_id'])
+        company_id = company[0][0]
+        # COMPANY
+        for index, value in enumerate(self.company_data):
+            if value[0] == company_id:
+                self.company_entry.current(index)
+                # PROJECT
+                project_id = data['project_id']
+                for index, value in enumerate(self.project_data):
+                    if value[0] == project_id:
+                        self.project_entry.current(index)
+                        break
+                else:
+                    logging.critical(f"""Modify Order: project_id:{project_id} 
+                                     does not exist""")
+                break
+        else:
+            logging.critical(f"""Modify Order: company_id:{company_id} 
+                     does not exist""")
+
+        # SUPERVISOR
+        supervisor_id = data['supervisor_id']
+        for index, value in enumerate(self.supervisor_data):
+            if value[0] == supervisor_id:
+                self.supervisor_entry.current(index)
+                break
+        else:
+            logging.critical(f"""Modify Order: supervisor_id:{supervisor_id} 
+                     does not exist""")
+
+        # EMPLOYEE
+        employee_id = data['employee_id']
+        for index, value in enumerate(self.employee_data):
+            if value[0] == employee_id:
+                self.employee_entry.current(index)
+                break
+        else:
+            logging.critical(f"""Modify Order: employee_id:{employee_id} 
+                     does not exist""")
+
+        # STATUS
+        status_id = data['_status_id']
+        for index, value in enumerate(self.status_data):
+            if value[0] == status_id:
+                self.status_entry.current(index)
+                break
+        else:
+            logging.critical(f"""Modify Order: _status_id:{status_id} 
+                     does not exist""")
+
+        self.address_entry.insert(0,data['full_address'])
+        self.lotblk_entry.insert(0,data['unit_address'])
+        self.order_entry.insert(0,data['order_number'])
+        self.amount_entry.insert(0,str(data['amount']/100))
+        self.et_entry.insert(0,data['external_tracking'])
+        self.attachment_entry.config(state="normal")
+        self.attachment_entry.delete(0,END)
+        self.attachment_entry.insert(0,data['attachment_name'])
+        self.attachment_entry.config(state="disabled")
+        self.note_text.delete("1.0",END)
+        self.note_text.insert("1.0",data['note'])
+        #TODO: Need to delete previous attachment upon storing new one
 
     def exit_window(self):
         self.win.destroy()

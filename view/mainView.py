@@ -253,6 +253,7 @@ class MainView:
 
         self.btn_search.bind_all('<Alt-Return>', lambda event: self.search_now())
         self.btn_search.bind_all('<Alt-BackSpace>', lambda event: self.clear_search())
+
         # Checkboxes Declaration, Positioning, Value, and Event
 
         # PAID. Database id=1
@@ -340,7 +341,7 @@ class MainView:
         self.btn_delete_order = Button(self.frame_option_menu,
                                         text='Delete',
                                         font= button_font,
-                                        command=self.delete_order)
+                                        command=self.app_controller.delete_order)
         self.btn_send_selected = Button(self.frame_option_menu,
                                         text="Send Selected",
                                         font= button_font,
@@ -350,6 +351,9 @@ class MainView:
         self.btn_modify_order.pack(side='right')
         self.btn_add_order.pack(side='right')
         self.btn_send_selected.pack(side='right')
+
+        self.btn_modify_order.bind_all('<Alt-Button-1>',
+                       lambda event:self.app_controller.update_order())
 
     def show_order_tree(self):
         # Frame Work Area Right Side
@@ -677,9 +681,3 @@ class MainView:
         if len(self.project_entry['values']) > 0 and \
                 self.project_entry['values'][0] != "All":
             self.project_entry.config(state='readonly')
-
-    def show_modify_order(self):
-        pass
-
-    def delete_order(self, *args):
-        self.app_controller.delete_order()

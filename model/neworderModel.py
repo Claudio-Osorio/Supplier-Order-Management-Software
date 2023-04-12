@@ -9,8 +9,20 @@ class NewOrderModel:
         store_new_order(data)
 
     @staticmethod
+    def get_order(order_id):
+        return get_order_by_id(order_id)
+
+    @staticmethod
+    def get_dict_order_by_id(order_id):
+        return get_dict_order_by_id(order_id)
+
+    @staticmethod
     def get_name_of_all_companies():
         return get_name_of_all_companies()
+
+    @staticmethod
+    def get_company_from_project_id(project_id):
+        return get_company_from_project_id(project_id)
 
     @staticmethod
     def get_all_projects(company_id):
