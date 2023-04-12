@@ -9,6 +9,10 @@ class NewOrderModel:
         store_new_order(data)
 
     @staticmethod
+    def store_updated_order(order_id, data):
+        update_new_order(order_id, data)
+
+    @staticmethod
     def get_order(order_id):
         return get_order_by_id(order_id)
 
@@ -47,3 +51,8 @@ class NewOrderModel:
     @staticmethod
     def get_preferred_employee(project_id):
         return get_preferred_employee(project_id)
+
+    @staticmethod
+    def get_attachment_storage_path():
+        return os.getcwd() + read_attachment_partial_path()
+

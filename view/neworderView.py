@@ -49,6 +49,8 @@ class NewOrderView:
 
         self.error_label = None
 
+        self.btn_save = None
+        self.btn_cancel = None
 
     def show_ui(self):
         self.win = Toplevel(self.root)
@@ -126,7 +128,7 @@ class NewOrderView:
                     font=("Arial", 9), height=1, width=6,
                     command=self.select_attachment)
         self.note_text = Text(self.win, bd=2, width=40, height=4,
-                         font='Arial 12 normal')
+                         font='Arial 12 normal', warp=None)
         # Entry Data Preset
         self.company_data = self.controller.get_companies()
         self.company_entry['values'] = [value[1] for value in self.company_data]
@@ -166,14 +168,14 @@ class NewOrderView:
         self.et_entry.place(x=460, y=270)
         self.note_text.place(x=353, y=345)
 
-        btn_save = Button(self.win, text="Save", font=("Arial", 12),
+        self.btn_save = Button(self.win, text="Save", font=("Arial", 12),
                           height=1, width=9,command= self.store_data)
 
-        btn_cancel = Button(self.win, text="Cancel", font=("Arial", 12),
+        self.btn_cancel = Button(self.win, text="Cancel", font=("Arial", 12),
                             height=1, width=9, command= self.exit_window)
 
-        btn_save.place(x=311, y=480)
-        btn_cancel.place(x=402, y=480)
+        self.btn_save.place(x=311, y=480)
+        self.btn_cancel.place(x=402, y=480)
 
     # Updates project scope to only show data for selected company
     # Updates employee based on predefined project
@@ -213,9 +215,7 @@ class NewOrderView:
         if self.error_label is not None:
             self.error_label.destroy()
 
-        data = {"_order.external_tracking" : str(self.et_entry.get()),
-                "_order.note" : str(self.note_text.get("1.0", END))}
-
+        data = dict()
         if self.validate_data(data):
             self.controller.save_data(data)
             self.exit_window()
@@ -378,6 +378,10 @@ class NewOrderView:
             self.attachment_entry.insert(0, "None")
             error_msg += "*An attachment must be imported"
             valid_record = False
+
+        data['external_tracking'] = self.et_entry.get()
+        data['note'] = self.note_text.get("1.0", END)
+
         if not valid_record:
             self.error_label = Label(self.win, text=error_msg,
                             justify="left", fg="red", font='Arial 8 bold')
@@ -397,9 +401,13 @@ class NewOrderView:
             self.attachment_entry.xview_moveto(1.0)
             self.attachment_entry.config(state="readonly")
 
-
-    def prefill_data(self, order_id):
+    def update(self, order_id):
+        data = dict()
         self.win.title("Update Order")
+        self.prefill_data(order_id, data)
+        self.btn_save.configure(command=lambda: self.validate_updated_data(order_id, data))
+
+    def prefill_data(self, order_id, data):
         data = self.controller.get_dict_order_by_id(order_id)
         data = data[0]
         stored_date = datetime.datetime.\
@@ -469,15 +477,28 @@ class NewOrderView:
         self.address_entry.insert(0,data['full_address'])
         self.lotblk_entry.insert(0,data['unit_address'])
         self.order_entry.insert(0,data['order_number'])
+        self.order_entry.configure(state='disabled')
         self.amount_entry.insert(0,str(data['amount']/100))
         self.et_entry.insert(0,data['external_tracking'])
         self.attachment_entry.config(state="normal")
         self.attachment_entry.delete(0,END)
-        self.attachment_entry.insert(0,data['attachment_name'])
+        self.attachment_entry.insert(0, str(self.controller.get_attachment_storage_path()\
+                                     + data['attachment_name']))
         self.attachment_entry.config(state="disabled")
         self.note_text.delete("1.0",END)
-        self.note_text.insert("1.0",data['note'])
-        #TODO: Need to delete previous attachment upon storing new one
+        note_text = data['note']
+        note_text = note_text.rstrip('\n')
+        print(note_text)
+        self.note_text.insert("1.0",note_text)
+
+    def validate_updated_data(self, order_id, data):
+        if self.error_label is not None:
+            self.error_label.destroy()
+
+        if self.validate_data(data):
+            self.controller.store_updated_order(order_id, data)
+            self.exit_window()
+            self.controller.refresh_orders()
 
     def exit_window(self):
         self.win.destroy()

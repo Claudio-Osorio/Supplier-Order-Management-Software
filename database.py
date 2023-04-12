@@ -204,7 +204,7 @@ def store_new_order(data):
 
     src = data['attachment_name']
     filename = str(new_order_id) + '-' + \
-               str(data['_order.order_number']) + \
+               str(data['order_number']) + \
                '.pdf'
     dst = os.getcwd() + \
           read_attachment_partial_path() + \
@@ -351,7 +351,8 @@ def delete_preferred_employee(list_projects):
         sql = """DELETE FROM preferred_project_employee
         WHERE project_id = ?"""
         c.execute(sql, (project_id,))
-        logging.info(f"Database: Project Id:{project_id} preferred employee has been deleted")
+        logging.info(f"Database: Project Id:{project_id} preferred"
+                     f" employee has been deleted")
     conn.commit()
     conn.close()
 
@@ -359,12 +360,16 @@ def update_new_order(order_id, data):
     conn = create_connection()
     c = conn.cursor()
     for column, new_value in data.items():
-        sql = f"""UPDATE _order SET {column} = ?
-        WHERE id = {order_id}
-        AND {column} != ?"""
-        values = (new_value, order_id, new_value)
-
-        if column == 'attachment_name':
+        if column != 'attachment_name':
+            sql = f"""UPDATE _order SET {column} = ?
+            WHERE id = {order_id}
+            AND {column} != ?"""
+            values = (new_value, new_value)
+            c.execute(sql, values)
+            num_rows_affected = c.rowcount
+            if num_rows_affected > 0:
+                logging.info(f"Database: Order Id: {order_id} Updated {column}")
+        else:
             src = data['attachment_name']
             filename = str(order_id) + '-' + \
                        str(data['order_number']) + \
@@ -372,13 +377,20 @@ def update_new_order(order_id, data):
             dst = os.getcwd() + \
                   read_attachment_partial_path() + \
                   filename
-            copied = shutil.copy2(src, dst)
-            if not copied:
-                logging.critical(f"""Database: Order Id:{order_id}
-                 - Failed to replace/update attachment_name.""")
-                conn.close()
-                return
-        c.execute(sql, values)
-        logging.info(f"Database: Order Id: {order_id} Updated {column}")
+            if dst not in src:
+                sql = f"""UPDATE _order SET attachment_name = ?
+                           WHERE id = {order_id}"""
+                c.execute(sql, (filename,))
+                copied = shutil.copy2(src, dst)
+                if not copied:
+                    logging.critical(f"""Database: Order Id:{order_id}
+                     - Failed to replace/update attachment_name.""")
+                    conn.close()
+                    return
+                else:
+                    logging.info(f"Database: Order Id: {order_id} Updated attachment_name")
+            else:
+                logging.info(f"Database: Order Id:{order_id} "
+                             f"Attachment file {filename} is maintained.")
     conn.commit()
     conn.close()

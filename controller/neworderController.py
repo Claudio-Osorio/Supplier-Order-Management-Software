@@ -10,7 +10,7 @@ class NewOrderController:
 
     def update(self, order_id):
         self.view.show_ui()
-        self.view.prefill_data(order_id)
+        self.view.update(order_id)
 
     def refresh_orders(self):
         self.app_controller.refresh_view()
@@ -43,8 +43,14 @@ class NewOrderController:
     def get_preferred_employee(self, project_id):
         return self.model.get_preferred_employee(project_id)
 
+    def get_attachment_storage_path(self):
+        return self.model.get_attachment_storage_path()
+
     def save_data(self,data):
         self.model.save_data(data)
+
+    def store_updated_order(self,order_id, data):
+        self.model.store_updated_order(order_id, data)
 
     def get_types(self):
         return self.model.get_all_types()
