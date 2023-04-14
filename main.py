@@ -1,11 +1,8 @@
 import tkinter as tk
 from app import *
-import logging
+from helpers.debugging import *
 
-DEBUG = True
-
-if DEBUG:
-    logging.basicConfig(level=logging.DEBUG)
+init_logging()
 
 if __name__ == "__main__":
     root = tk.Tk()

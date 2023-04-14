@@ -5,6 +5,7 @@ Scripts/
 share/
 build/
 dist/
+logs/
 pyvenv.cfg
 data/attachments/
 data/database/database.db

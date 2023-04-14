@@ -25,7 +25,6 @@ class NewProjectView:
 
         self.error_label = None
 
-
     def show_ui(self):
         self.win = Toplevel(self.root)
         self.win.geometry("450x340+560+380")
@@ -122,7 +121,6 @@ class NewProjectView:
             self.error_label.destroy()
         data = dict()
         if self.validate_data(data):
-            print(data)
             self.controller.save_data(data)
             self.exit_window()
             self.controller.refresh_projects()
