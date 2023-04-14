@@ -1,5 +1,5 @@
 from tkinter import *
-from input_validation import *
+from helpers.input_validation import *
 
 class NewDivisionView:
     def __init__(self, root, controller):

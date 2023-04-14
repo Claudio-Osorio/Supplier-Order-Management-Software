@@ -1,6 +1,6 @@
-from database import delete_order, get_order_by_id
+from helpers.database import delete_order
 import os, logging
-from configurations import read_attachment_partial_path
+from helpers.configurations import read_attachment_partial_path
 
 class DeleteOrderModel:
     @staticmethod

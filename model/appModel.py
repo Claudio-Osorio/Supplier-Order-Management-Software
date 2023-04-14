@@ -1,5 +1,5 @@
-from database import *
-from configurations import store_main_window_geometry
+from helpers.database import *
+from helpers.configurations import store_main_window_geometry
 
 class AppModel:
     @staticmethod

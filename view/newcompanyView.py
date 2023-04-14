@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter.constants import *
 from tkinter import ttk
-from input_validation import blank_input, validate_by_regex
+from helpers.input_validation import blank_input, validate_by_regex
 
 class NewCompanyView:
     def __init__(self, root, controller):

@@ -1,4 +1,4 @@
-from database import get_order_by_id
+from helpers.database import get_order_by_id
 class DeleteOrderController:
     def __init__(self, root, model, view, app_controller):
         self.root = root

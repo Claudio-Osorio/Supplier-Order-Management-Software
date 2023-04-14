@@ -1,6 +1,5 @@
 from tkinter import *
-from tkinter import ttk
-from input_validation import validate_email,validate_phone,\
+from helpers.input_validation import validate_email,validate_phone,\
     validate_by_regex, blank_input
 
 class NewEmployeeView:

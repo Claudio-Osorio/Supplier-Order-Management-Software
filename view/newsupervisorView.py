@@ -1,5 +1,5 @@
 import tkinter as tk
-from input_validation import *
+from helpers.input_validation import *
 
 class NewSupervisorView:
     def __init__(self, root, controller):

@@ -1,4 +1,4 @@
-from database import *
+from helpers.database import *
 
 class NewOrderModel:
     def __init__(self):

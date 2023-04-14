@@ -1,4 +1,4 @@
-from database import store_new_company,store_new_division
+from helpers.database import store_new_company,store_new_division
 class NewCompanyModel:
     def __init__(self):
         self.divisions = list()

@@ -1,8 +1,8 @@
 from tkinter import *
 from tkinter.ttk import Combobox
-from input_validation import validate_address
-from input_validation import validate_by_regex
-from input_validation import blank_input
+from helpers.input_validation import validate_address
+from helpers.input_validation import validate_by_regex
+from helpers.input_validation import blank_input
 
 class NewProjectView:
     def __init__(self, root, controller):

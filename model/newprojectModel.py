@@ -1,7 +1,7 @@
-from database import get_name_of_all_companies
-from database import get_all_divisions
-from database import store_new_project
-from database import get_name_of_all_employees
+from helpers.database import get_name_of_all_companies
+from helpers.database import get_all_divisions
+from helpers.database import store_new_project
+from helpers.database import get_name_of_all_employees
 
 class NewProjectModel:
     @staticmethod

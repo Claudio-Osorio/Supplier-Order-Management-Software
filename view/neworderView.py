@@ -3,7 +3,7 @@ from tkinter import *
 from tkinter.ttk import Combobox
 from tkinter.filedialog import askopenfilename
 from tkcalendar import DateEntry
-from input_validation import *
+from helpers.input_validation import *
 import os
 import datetime
 

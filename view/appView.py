@@ -1,9 +1,6 @@
 import tkinter as tk
-from tkinter import *
-from tkinter.ttk import Combobox
-from configurations import *
-from configurations import store_main_window_geometry as store_mw_geometry
-from configurations import read_main_window_geometry as read_mw_geometry
+from helpers.configurations import *
+from helpers.configurations import read_main_window_geometry as read_mw_geometry
 
 class AppView:
     def __init__(self, root, controller):

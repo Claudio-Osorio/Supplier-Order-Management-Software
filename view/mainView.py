@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter.constants import *
 from tkinter.ttk import Combobox, Scrollbar, Treeview, Style
 from tkcalendar import DateEntry
-from input_validation import *
+from helpers.input_validation import *
 import datetime
 
 class MainView:

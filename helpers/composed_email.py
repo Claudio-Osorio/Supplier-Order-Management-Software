@@ -1,9 +1,9 @@
 import win32com.client
 from datetime import datetime
-from configurations import *
+from helpers.configurations import *
 import pythoncom
 import logging
-from pprint import pprint
+
 
 class ComposedEmail:
     def __init__(self, to_name, to_email):

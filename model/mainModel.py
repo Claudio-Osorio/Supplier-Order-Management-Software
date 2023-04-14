@@ -1,11 +1,9 @@
-import logging
-import os
 from helpers.composed_email import *
-from database import *
-import pythoncom, win32com.client, threading, time
-from input_validation import blank_input
-from configurations import store_tree_status_filter, read_tree_status_filter
-from pprint import pprint
+from helpers.database import *
+import pythoncom, win32com.client, threading
+from helpers.input_validation import blank_input
+from helpers.configurations import store_tree_status_filter, read_tree_status_filter
+
 
 class MainModel:
     # Returns the supervisor Id. Returns -1 if no supervisor is selected
