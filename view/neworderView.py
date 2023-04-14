@@ -282,7 +282,7 @@ class NewOrderView:
             valid_record = False
         else:
             if not blank_input(lotblk):
-                if validate_by_regex(lotblk, r"^[a-zA-Z0-9\s\/]*"):
+                if validate_by_regex(lotblk, r"^[a-zA-Z0-9\s\/\-\,]*"):
                         data["unit_address"] = str(lotblk)
                 else:
                     error_msg += "*The Lot/Blk field cannot contain special characters\n"
@@ -474,11 +474,15 @@ class NewOrderView:
             logging.critical(f"""Modify Order: _status_id:{status_id} 
                      does not exist""")
 
-        self.address_entry.insert(0,data['full_address'])
-        self.lotblk_entry.insert(0,data['unit_address'])
+        if data['full_address']:
+            self.address_entry.insert(0,data['full_address'])
+
+        if data['unit_address']:
+            self.lotblk_entry.insert(0,data['unit_address'])
+
         self.order_entry.insert(0,data['order_number'])
         self.order_entry.configure(state='disabled')
-        self.amount_entry.insert(0,str(data['amount']/100))
+        self.amount_entry.insert(0,str("{:0.2f}".format(data["amount"]/100)))
         self.et_entry.insert(0,data['external_tracking'])
         self.attachment_entry.config(state="normal")
         self.attachment_entry.delete(0,END)
@@ -488,7 +492,6 @@ class NewOrderView:
         self.note_text.delete("1.0",END)
         note_text = data['note']
         note_text = note_text.rstrip('\n')
-        print(note_text)
         self.note_text.insert("1.0",note_text)
 
     def validate_updated_data(self, order_id, data):

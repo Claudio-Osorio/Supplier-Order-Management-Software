@@ -15,7 +15,6 @@ class NewEmployeeModel:
 
     @staticmethod
     def save_data(data):
-        print("storing")
         employee_id = store_new_employee(data)
         if data["projects"] is not None:
             delete_preferred_employee(data["projects"])

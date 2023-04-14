@@ -357,7 +357,7 @@ class MainView:
 
     def show_order_tree(self):
         # Frame Work Area Right Side
-        self.frame_order_area = Frame(self.root, bg="red")
+        self.frame_order_area = Frame(self.root)
         self.frame_order_area.pack(fill="both", expand=True)
         # Prevents children widget to modify the frame size
         self.frame_order_area.pack_propagate(False)

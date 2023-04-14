@@ -248,14 +248,17 @@ class MainModel:
             row_values = list()
             for col_index, col in enumerate(row):
                 if col_index == col_guide['Amount']:
-                    row_values.append(col/100)
+                    row_values.append(str("{:0.2f}".format(col/100)))
                     continue
                 if col_index == col_guide['Date']:
                     col  = datetime.strptime(col, '%Y-%m-%d').\
                         strftime('%m/%d/%Y')
                     row_values.append(col)
                     continue
-                row_values.append(col)
+                if col == None:
+                    row_values.append('')
+                else:
+                    row_values.append(col)
             order_tree.insert(parent='', index='end',
                   iid=row_index, text="",
                   tags=("textonly",),
