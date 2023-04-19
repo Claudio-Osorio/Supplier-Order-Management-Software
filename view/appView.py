@@ -17,10 +17,13 @@ class AppView:
         # DATA Menu
         self.menubar = tk.Menu(self.root)
         self.data_menu = tk.Menu(self.menubar, tearoff=0)
-        self.data_menu.add_command(label="Import Excel File",
-                              command=self.controller.import_excel_file)
-        self.data_menu.add_command(label="Export to Excel File",
-                              command=self.controller.export_to_excel_file)
+        self.data_menu.add_command(label="Import Orders From Excel File",
+                              command=self.controller.import_orders_from_excel_file)
+        self.data_menu.add_command(label="Export Orders to Excel File",
+                              command=self.controller.export_orders_to_excel_file)
+        self.data_menu.add_separator()
+        self.data_menu.add_command(label="Export Order Attachments To Folder",
+                               command=self.controller.export_orders_to_excel_file)
         self.data_menu.add_separator()
         self.data_menu.add_command(label="Exit",
                               command=self.root.quit)
@@ -80,7 +83,6 @@ class AppView:
                                   command=self.controller.about)
         self.menubar.add_cascade(label="Help", menu=self.helpmenu)
         self.root.config(menu=self.menubar)
-
 
     def store_current_layout(self):
         geometry = self.root.winfo_geometry()

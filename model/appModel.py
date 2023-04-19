@@ -11,11 +11,7 @@ class AppModel:
         store_main_window_geometry(geometry)
 
     @staticmethod
-    def import_excel_file():
-        pass
-
-    @staticmethod
-    def export_to_excel_file():
+    def export_order_attachments_to_folder():
         pass
 
     @staticmethod

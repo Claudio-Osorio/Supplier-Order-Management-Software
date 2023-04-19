@@ -164,7 +164,8 @@ def get_preferred_employee(project_id):
     sql = f"""
     SELECT employee_id FROM preferred_project_employee
     WHERE project_id = ?"""
-    return execute_query(sql,project_id)
+    pref_emp = execute_query(sql,project_id)
+    return pref_emp[0][0]
 
 def store_new_order(data):
     conn, c = create_transaction()

@@ -198,8 +198,7 @@ class NewOrderView:
     def on_project_selected(self, *arg):
         selected_project_id = self.project_data[self.project_entry.current()][0]
         try:
-            preferred_employee = self.controller.get_preferred_employee(selected_project_id)[0]
-            preferred_employee_id = preferred_employee[0]
+            preferred_employee_id = self.controller.get_preferred_employee(selected_project_id)
             index = -1
             for employee_id, employee in self.employee_data:
                 index += 1
@@ -303,6 +302,7 @@ class NewOrderView:
         amount = self.amount_entry.get()
         if blank_input(amount):
             error_msg += "*Amount field cannot be left blank\n"
+            valid_record = False
         else:
             try:
                 if validate_amount(amount):

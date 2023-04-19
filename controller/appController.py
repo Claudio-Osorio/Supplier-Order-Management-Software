@@ -6,6 +6,7 @@ from controller.newsupervisorController import NewSupervisorController
 from controller.newemployeeController import NewEmployeeController
 from controller.newcompanyController import NewCompanyController
 from controller.newprojectController import NewProjectController
+from controller.importController import ImportController
 # View
 from view.aboutView import AboutView
 from view.mainView import MainView
@@ -15,6 +16,7 @@ from view.newsupervisorView import NewSupervisorView
 from view.newemployeeView import NewEmployeeView
 from view.newcompanyView import NewCompanyView
 from view.newprojectView import NewProjectView
+from view.importView import ImportView
 # Model
 from model.mainModel import MainModel
 from model.neworderModel import NewOrderModel
@@ -23,6 +25,7 @@ from model.newsupervisorModel import NewSupervisorModel
 from model.newemployeeModel import NewEmployeeModel
 from model.newcompanyModel import NewCompanyModel
 from model.newprojectModel import NewProjectModel
+from model.importModel import ImportModel
 
 class AppController:
     def __init__(self, root, model, view):
@@ -37,6 +40,7 @@ class AppController:
         self.new_supervisor_controller = None
         self.new_company_controller = None
         self.new_project_controller = None
+        self.import_orders_controller = None
 
     def validate_database(self):
         self.model.validate_database()
@@ -86,11 +90,19 @@ class AppController:
                                                  self)
             self.delete_order_controller.delete_selected_orders(orders_id)
 
-    def import_excel_file(self):
-        self.model.import_excel_file()
+    def import_orders_from_excel_file(self):
+        self.import_orders_controller = ImportController(self.root,
+                                                         ImportModel,
+                                                         ImportView,
+                                                         self)
+        self.import_orders_controller.show_ui()
 
-    def export_to_excel_file(self):
-        self.model.export_to_excel_file()
+    def export_orders_to_excel_file(self):
+        pass
+
+    def export_order_attachments_to_folder(self):
+        self.model.export_order_attachments_to_folder()
+
 
     def new_supervisor(self):
         self.new_supervisor_controller = NewSupervisorController(self.root,
