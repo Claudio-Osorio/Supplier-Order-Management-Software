@@ -78,7 +78,7 @@ class ComposedEmail:
         company_id = (order_by_status[0])['company.id']
         status_id = (order_by_status[0])['order_status.id']
 
-        self.body += read_status_header_path(company_id, status_id)
+        self.body += read_status_header_file(company_id, status_id)
         self.body += read_table_header()
 
         for order in order_by_status:

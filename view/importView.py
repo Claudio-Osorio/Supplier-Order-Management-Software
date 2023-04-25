@@ -43,7 +43,7 @@ class ImportView:
 
     def import_summary(self, summary):
         if summary:
-            message = f"Sucessfully Imported: {summary[0]}" \
+            message = f"Successfully Imported: {summary[0]}" \
                       f"\nFailed to import: {summary[1]} \n\n" \
                       f"NOTE: To view and resolve failed imports please refer " \
                       f"to the latest log file"

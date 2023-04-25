@@ -9,7 +9,6 @@ class NewCompanyController:
         self.model = model()
         self.view = view(root, self)
 
-        # used to later add division
         self.app_controller = app_controller
         self.division_controller = None
 

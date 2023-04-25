@@ -60,7 +60,10 @@ def read_default_email_cc():
 def read_default_subject():
     return read_file('email', 'email_subject_path')
 
-def read_status_header_path(company_id, status_id):
+def read_status_header_path():
+    return config_object["email"]["email_status_header_path"]
+
+def read_status_header_file(company_id, status_id):
     status_header_path = config_object["email"]["email_status_header_path"] + \
                          str(company_id) + '\\' + str(status_id) + '.html'
     with open(os.getcwd() + status_header_path, 'r') as file:
@@ -97,6 +100,10 @@ def store_tree_sorting_type(_type):
 
 def store_tree_limit(limit):
     config_object["search_param"]["tree_limit"] = str(limit)
+    write_config()
+
+def store_status_header_path(path):
+    config_object["email"]["email_status_header_path"] = str(path)
     write_config()
 
 # DATABASE - MUTATORS
