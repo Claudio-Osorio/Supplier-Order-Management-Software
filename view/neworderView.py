@@ -426,6 +426,7 @@ class NewOrderView:
 
         company = self.controller.get_company_from_project_id(data['project_id'])
         company_id = company[0][0]
+
         # COMPANY
         for index, value in enumerate(self.company_data):
             if value[0] == company_id:
@@ -476,9 +477,13 @@ class NewOrderView:
 
         if data['full_address']:
             self.address_entry.insert(0,data['full_address'])
+        else:
+            self.address_entry.insert(0, "")
 
         if data['unit_address']:
             self.lotblk_entry.insert(0,data['unit_address'])
+        else:
+            self.lotblk_entry.insert(0, "")
 
         self.order_entry.insert(0,data['order_number'])
         self.order_entry.configure(state='disabled')

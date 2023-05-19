@@ -361,10 +361,15 @@ def update_new_order(order_id, data):
     c = conn.cursor()
     for column, new_value in data.items():
         if column != 'attachment_name':
-            sql = f"""UPDATE _order SET {column} = ?
-            WHERE id = {order_id}
-            AND {column} != ?"""
-            values = (new_value, new_value)
+            if new_value is None:
+                sql = f"""UPDATE _order SET {column} = ?
+                WHERE id = {order_id}"""
+                values = (None,)
+            else:
+                sql = f"""UPDATE _order SET {column} = ?
+                WHERE (id = {order_id}
+                AND ({column} IS NULL OR {column} != ?))"""
+                values = (new_value, new_value)
             c.execute(sql, values)
             num_rows_affected = c.rowcount
             if num_rows_affected > 0:
