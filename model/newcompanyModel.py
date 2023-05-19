@@ -32,7 +32,7 @@ class NewCompanyModel:
             else:
                 raise FileNotFoundError
 
-            logging.info(f"New Company id:{new_company_id} - {company_data}: successfully stored."
+            logging.info(f"New Company id:{new_company_id} - {company_data['_name']}: successfully stored."
                          f" Header files successfully created.")
 
         except FileNotFoundError:
