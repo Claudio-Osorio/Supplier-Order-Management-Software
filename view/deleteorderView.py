@@ -19,4 +19,7 @@ class DeleteOrderView:
         for index, order in enumerate(list_orders, 1):
             order_no = order[4]
             message += f"""{index}.- Order #{order_no}\n"""
+            if index > 4:
+                message += f"""...and more"""
+                break
         return askyesno("Delete Order", message)
