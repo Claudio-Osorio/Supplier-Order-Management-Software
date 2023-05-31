@@ -54,3 +54,6 @@ class NewOrderController:
 
     def get_types(self):
         return self.model.get_all_types()
+
+    def filter_options(self, combobox, options):
+        self.model.filter_options(combobox, options)

@@ -97,10 +97,9 @@ class NewOrderView:
                                     date_pattern='mm/dd/yyyy',
                                     textvariable=self.date_var)
         self.type_entry = Combobox(self.win, width=10, height=40,
-                      textvariable=self.type_var, state="readonly")
+                      textvariable=self.type_var)
         self.company_entry = Combobox(self.win,
-                      width=27, height=40, textvariable=self.company_var,
-                      state="readonly")
+                      width=27, height=40, textvariable=self.company_var)
         self.project_entry = Combobox(self.win,
                                       width=27, height=40, textvariable=self.project_var,
                                       state="disabled")
@@ -113,15 +112,13 @@ class NewOrderView:
         self.amount_entry = Entry(self.win, bd=2, width=12,
                                      font='Arial 12 normal')
         self.supervisor_entry = Combobox(self.win, width=27,
-                        height=40, textvariable=self.supervisor_var,
-                        state="readonly")
+                        height=40, textvariable=self.supervisor_var)
         self.et_entry = Entry(self.win, bd=2, width=15,
                                      font='Arial 12 normal')
         self.employee_entry = Combobox(self.win,
-                                       width=27, height=40, textvariable=self.employee_var,
-                                       state="readonly")
+                                       width=27, height=40, textvariable=self.employee_var)
         self.status_entry = Combobox(self.win, width=27, height=40,
-                         textvariable=self.status_var, state="readonly")
+                         textvariable=self.status_var)
         self.attachment_entry = Entry(self.win, bd=2, width=15,
                          font='Arial 10 normal', state='normal')
         self.btn_select_attachment = Button(self.win, text="Import",
@@ -129,25 +126,52 @@ class NewOrderView:
                     command=self.select_attachment)
         self.note_text = Text(self.win, bd=2, width=40, height=4,
                          font='Arial 12 normal', warp=None)
+
         # Entry Data Preset
         self.company_data = self.controller.get_companies()
-        self.company_entry['values'] = [value[1] for value in self.company_data]
+        self.set_entry_options(self.company_entry, self.company_data)
+
         self.project_entry['values'] = [('Select a company first')]
         self.project_entry.current(0)
+
         self.status_data = self.controller.get_statuses()
-        self.status_entry['values'] = [value[1] for value in self.status_data]
+        self.set_entry_options(self.status_entry, self.status_data)
+
         self.type_data = self.controller.get_types()
-        self.type_entry['values'] = [value[1] for value in self.type_data]
+        self.set_entry_options(self.type_entry, self.type_data)
+
         self.supervisor_data = self.controller.get_supervisors()
-        self.supervisor_entry['values'] = [value[1] for value in self.supervisor_data]
+        self.set_entry_options(self.supervisor_entry, self.supervisor_data)
+
         self.employee_data = self.controller.get_employees()
-        self.employee_entry['values'] = [value[1] for value in self.employee_data]
+        self.set_entry_options(self.employee_entry, self.employee_data)
+
         self.attachment_entry.insert(0, 'None')
         self.attachment_entry.config(state='readonly')
 
         # Triggers
-        self.company_var.trace('w', self.on_company_selected)
-        self.project_var.trace('w', self.on_project_selected)
+        self.type_var.trace('w',self.on_type_input)
+        self.company_var.trace('w', self.on_company_input)
+        self.project_var.trace('w', self.on_project_input)
+        self.status_var.trace('w',self.on_status_input)
+        self.supervisor_var.trace('w',self.on_supervisor_input)
+        self.employee_var.trace('w',self.on_employee_input)
+
+        # Resetting list of options when one is selected
+        self.type_entry.bind('<<ComboboxSelected>>',
+                             lambda x: self.set_entry_options(self.type_entry, self.type_data))
+        self.company_entry.bind('<<ComboboxSelected>>',
+                             lambda x: (self.set_entry_options(self.company_entry, self.company_data),
+                                        self.on_company_selected()))
+        self.project_entry.bind('<<ComboboxSelected>>',
+                             lambda x:  (self.set_entry_options(self.project_entry, self.project_data),
+                                         self.on_project_selected()))
+        self.status_entry.bind('<<ComboboxSelected>>',
+                             lambda x: self.set_entry_options(self.status_entry, self.status_data))
+        self.supervisor_entry.bind('<<ComboboxSelected>>',
+                             lambda x: self.set_entry_options(self.supervisor_entry, self.supervisor_data))
+        self.employee_entry.bind('<<ComboboxSelected>>',
+                             lambda x: self.set_entry_options(self.employee_entry, self.employee_data))
 
         # Column 1 (LHS)
         self.date_entry.place(x=120, y=20)
@@ -177,23 +201,52 @@ class NewOrderView:
         self.btn_save.place(x=311, y=480)
         self.btn_cancel.place(x=402, y=480)
 
+    def set_entry_options(self, entry, data):
+        entry['values'] = [value[1] for value in data]
+
+    def on_type_input(self, *args):
+        self.controller.filter_options(self.type_entry, self.type_data)
+
+    def on_company_input(self, *args):
+        self.controller.filter_options(self.company_entry, self.company_data)
+
+    def on_project_input(self, *args):
+        self.controller.filter_options(self.project_entry, self.project_data)
+
+    def on_status_input(self, *args):
+        self.controller.filter_options(self.status_entry, self.status_data)
+
+    def on_supervisor_input(self, *args):
+        self.controller.filter_options(self.supervisor_entry, self.supervisor_data)
+
+    def on_employee_input(self, *args):
+        self.controller.filter_options(self.employee_entry, self.employee_data)
+
     # Updates project scope to only show data for selected company
     # Updates employee based on predefined project
-    def on_company_selected(self, *arg):
-        # Get Projects
-        selected_company_id=self.company_data[self.company_entry.current()][0]
-        self.project_data = self.controller.\
-            get_projects_for_company(selected_company_id)
-        self.project_entry['values'] = [value[1] for value in self.project_data]
-        # If there is no project set project as "None"
+    def on_company_selected(self):
+        if self.company_entry.current() != -1:
+            # Get Projects if a company is selected
+            selected_company_id=self.company_data[self.company_entry.current()][0]
+            self.project_data = self.controller.\
+                get_projects_for_company(selected_company_id)
+
+            # Removes potential disabled and instructions from entry
+            self.project_entry.config(state="normal")
+            self.set_entry_options(self.project_entry, self.project_data)
+        else:
+            # If there is no company selected or no project then set project as "None"
+            self.project_entry['values'] = []
+
         if len(self.project_entry['values']) == 0:
             self.project_entry['values'] = [('None')]
             self.project_entry.current(0)
             self.project_entry.config(state="disabled")
         else:
-            self.project_entry.config(state="readonly")
-        # Trigger update on dropdown
-        self.project_entry.current(0)
+            self.project_entry.config(state="normal")
+            self.project_entry.current(0)
+            self.project_entry.event_generate("<<ComboboxSelected>>")
+            self.set_entry_options(self.project_entry, self.project_data)
 
     def on_project_selected(self, *arg):
         selected_project_id = self.project_data[self.project_entry.current()][0]
@@ -205,7 +258,9 @@ class NewOrderView:
                 if employee_id == preferred_employee_id:
                     list_element_index = employee_id
                     break
+            self.set_entry_options(self.employee_entry, self.employee_data)
             self.employee_entry.current(index)
+            self.employee_entry.event_generate("<<ComboboxSelected>>")
         except Exception as e:
             logging.critical(f"""Project id {selected_project_id} has no preferred
              employee set. Presetting employee failed.""")
@@ -431,6 +486,7 @@ class NewOrderView:
         for index, value in enumerate(self.company_data):
             if value[0] == company_id:
                 self.company_entry.current(index)
+                self.company_entry.event_generate("<<ComboboxSelected>>")
                 # PROJECT
                 project_id = data['project_id']
                 for index, value in enumerate(self.project_data):

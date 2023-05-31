@@ -56,3 +56,9 @@ class NewOrderModel:
     def get_attachment_storage_path():
         return os.getcwd() + read_attachment_partial_path()
 
+    @staticmethod
+    def filter_options(combobox, options):
+        if options:
+            typed_text = combobox.get().lower()
+            filtered_options = [option[1] for option in options if typed_text in option[1].lower()]
+            combobox['values'] = filtered_options
