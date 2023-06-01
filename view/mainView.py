@@ -141,6 +141,7 @@ class MainView:
         self.frame_search_menu1.pack(fill="x")
         self.frame_search_menu2.pack(fill="x")
         self.frame_search_menu3.pack(fill="x")
+
         # Doesn't let the children widget modify the frame size
         self.frame_search_menu1.pack_propagate(False)
         self.frame_search_menu2.pack_propagate(False)
@@ -182,13 +183,11 @@ class MainView:
                                         date_pattern='mm/dd/yyyy',
                                         textvariable=self.end_date_var)
         self.supervisor_entry = Combobox(self.frame_search_menu1, width=27,
-                                         height=40, textvariable=self.supervisor_var,
-                                         state="readonly")
+                                         height=40, textvariable=self.supervisor_var)
         self.employee_entry = Combobox(self.frame_search_menu1, width=27, height=40,
-                                       textvariable=self.employee_var, state="readonly")
+                                       textvariable=self.employee_var)
         self.company_entry = Combobox(self.frame_search_menu1,
-                                      width=27, height=40, textvariable=self.company_var,
-                                      state="readonly")
+                                      width=27, height=40, textvariable=self.company_var)
         self.project_entry = Combobox(self.frame_search_menu1,
                                       width=27, height=40, textvariable=self.project_var,
                                       state="disabled")
@@ -199,7 +198,7 @@ class MainView:
         self.amount_entry = Entry(self.frame_search_menu2, bd=2, width=12,
                                      font='Arial 10 normal')
         self.type_entry = Combobox(self.frame_search_menu2, width=12, height=40,
-                                   textvariable=self.type_var, state="readonly")
+                                   textvariable=self.type_var)
         self.order_entry = Entry(self.frame_search_menu2, bd=2, width=15,
                                     font='Arial 10 normal')
         self.tracking_entry = Entry(self.frame_search_menu2, bd=2, width=15,
@@ -208,8 +207,25 @@ class MainView:
         self.fill_search_entries()
         self.clear_search()
 
-        self.company_var.trace('w', self.on_search_company_selected)
-        self.project_var.trace('w', self.on_search_project_selected)
+        # Resetting list of options when one is selected
+        self.type_entry.bind('<<ComboboxSelected>>',
+                             lambda x: self.set_entry_options(self.type_entry, self.type_data))
+        self.company_entry.bind('<<ComboboxSelected>>',
+                             lambda x: (self.set_entry_options(self.company_entry, self.company_data),
+                                        self.on_search_company_selected()))
+        self.project_entry.bind('<<ComboboxSelected>>',
+                             lambda x:  (self.set_entry_options(self.project_entry, self.project_data),
+                                         self.on_search_project_selected()))
+        self.supervisor_entry.bind('<<ComboboxSelected>>',
+                             lambda x: self.set_entry_options(self.supervisor_entry, self.supervisor_data))
+        self.employee_entry.bind('<<ComboboxSelected>>',
+                             lambda x: self.set_entry_options(self.employee_entry, self.employee_data))
+
+        self.type_var.trace('w',self.on_type_input)
+        self.company_var.trace('w', self.on_company_input)
+        self.project_var.trace('w', self.on_project_input)
+        self.supervisor_var.trace('w',self.on_supervisor_input)
+        self.employee_var.trace('w',self.on_employee_input)
 
         #First Frame
         start_date_label.pack(side="left")
@@ -663,11 +679,30 @@ class MainView:
             widgets.destroy()
         frame.destroy()
 
+    def set_entry_options(self, entry, data):
+        entry['values'] = [value[1] for value in data]
+
+    def on_type_input(self, *args):
+        self.controller.filter_options(self.type_entry, self.type_data)
+
+    def on_company_input(self, *args):
+        self.controller.filter_options(self.company_entry, self.company_data)
+
+    def on_project_input(self, *args):
+        self.controller.filter_options(self.project_entry, self.project_data)
+
+    def on_supervisor_input(self, *args):
+        self.controller.filter_options(self.supervisor_entry, self.supervisor_data)
+
+    def on_employee_input(self, *args):
+        self.controller.filter_options(self.employee_entry, self.employee_data)
+
     def on_search_company_selected(self, *args):
         selected_company_id = self.company_data[self.company_entry.current()][0]
         self.project_data = self.controller. \
             get_projects_for_company(selected_company_id)
-        self.project_entry['values'] = [value[1] for value in self.project_data]
+        self.set_entry_options(self.project_entry,self.project_data)
+
         # If there is no project set project as "All"
         if len(self.project_entry['values']) == 0:
             self.project_entry['values'] = [('All')]
@@ -675,9 +710,11 @@ class MainView:
             self.project_entry.config(state="disabled")
         # Trigger update on dropdown
         self.project_entry.current(0)
+        self.project_entry.event_generate("<<ComboboxSelected>>")
+        self.set_entry_options(self.project_entry, self.project_data)
         self.on_search_project_selected()
 
     def on_search_project_selected(self, *args):
         if len(self.project_entry['values']) > 0 and \
                 self.project_entry['values'][0] != "All":
-            self.project_entry.config(state='readonly')
+            self.project_entry.config(state='normal')

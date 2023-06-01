@@ -409,3 +409,10 @@ class MainModel:
                     raise ValueError
 
         new_email.create_email_draft(supervisor_id, outlook_id)
+
+    @staticmethod
+    def filter_options(combobox, options):
+        if options:
+            typed_text = combobox.get().lower()
+            filtered_options = [option[1] for option in options if typed_text in option[1].lower()]
+            combobox['values'] = filtered_options

@@ -56,3 +56,6 @@ class MainController:
 
     def destroy_view(self):
         self.view.destroy_view()
+
+    def filter_options(self, combobox, options):
+        self.model.filter_options(combobox, options)
