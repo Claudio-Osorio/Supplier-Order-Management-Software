@@ -1,6 +1,7 @@
 # Controller
 from controller.mainController import MainController
 from controller.neworderController import NewOrderController
+from controller.modifyorderController import ModifyOrderController
 from controller.deleteorderController import DeleteOrderController
 from controller.newsupervisorController import NewSupervisorController
 from controller.newemployeeController import NewEmployeeController
@@ -11,6 +12,7 @@ from controller.importController import ImportController
 from view.aboutView import AboutView
 from view.mainView import MainView
 from view.neworderView import NewOrderView
+from view.modifyorderView import ModifyOrderView
 from view.deleteorderView import DeleteOrderView
 from view.newsupervisorView import NewSupervisorView
 from view.newemployeeView import NewEmployeeView
@@ -20,6 +22,7 @@ from view.importView import ImportView
 # Model
 from model.mainModel import MainModel
 from model.neworderModel import NewOrderModel
+from model.modifyorderModel import ModifyOrderModel
 from model.deleteorderModel import DeleteOrderModel
 from model.newsupervisorModel import NewSupervisorModel
 from model.newemployeeModel import NewEmployeeModel
@@ -35,6 +38,7 @@ class AppController:
 
         self.main_controller = None
         self.new_order_controller = None
+        self.modify_order_controller = None
         self.delete_order_controller = None
         self.new_employee_controller = None
         self.new_supervisor_controller = None
@@ -72,14 +76,19 @@ class AppController:
                                             self)
         self.new_order_controller.show_ui()
 
-    def update_order(self):
+    def modify_order(self):
+        self.new_order_controller = NewOrderController(self.root,
+                                            NewOrderModel,
+                                            NewOrderView,
+                                            self)
         orders_id = self.main_controller.get_selected_orders()
         for order_id in orders_id:
-            self.new_order_controller = NewOrderController(self.root,
-                                                           NewOrderModel,
-                                                           NewOrderView,
-                                                           self)
-            self.new_order_controller.update(order_id)
+            self.modify_order_controller = ModifyOrderController(self.root,
+                                                                 ModifyOrderModel,
+                                                                 ModifyOrderView,
+                                                                 self,
+                                                                 self.new_order_controller)
+            self.modify_order_controller.modify(order_id)
 
     def delete_order(self):
         orders_id = self.main_controller.get_selected_orders()

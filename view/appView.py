@@ -33,8 +33,8 @@ class AppView:
         self.editmenu = tk.Menu(self.menubar, tearoff=0)
         self.editmenu.add_command(label="New Order",
                              command=self.controller.new_order)
-        self.editmenu.add_command(label="Update Order",
-                             command=self.controller.update_order)
+        self.editmenu.add_command(label="Modify Order",
+                             command=self.controller.modify_order)
         self.editmenu.add_command(label="Delete Order",
                              command=self.controller.delete_order)
         self.editmenu.add_separator()

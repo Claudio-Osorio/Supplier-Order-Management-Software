@@ -353,7 +353,7 @@ class MainView:
         self.btn_modify_order = Button(self.frame_option_menu,
                                         text='Modify',
                                         font= button_font,
-                                        command=self.app_controller.update_order)
+                                        command=self.app_controller.modify_order)
         self.btn_delete_order = Button(self.frame_option_menu,
                                         text='Delete',
                                         font= button_font,
@@ -369,7 +369,7 @@ class MainView:
         self.btn_send_selected.pack(side='right')
 
         self.btn_modify_order.bind_all('<Alt-Button-1>',
-                       lambda event:self.app_controller.update_order())
+                       lambda event:self.app_controller.modify_order())
 
     def show_order_tree(self):
         # Frame Work Area Right Side

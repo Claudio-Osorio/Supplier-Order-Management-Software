@@ -8,10 +8,6 @@ class NewOrderController:
     def show_ui(self):
         self.view.show_ui()
 
-    def update(self, order_id):
-        self.view.show_ui()
-        self.view.update(order_id)
-
     def refresh_orders(self):
         self.app_controller.refresh_view()
 
@@ -48,9 +44,6 @@ class NewOrderController:
 
     def save_data(self,data):
         self.model.save_data(data)
-
-    def store_updated_order(self,order_id, data):
-        self.model.store_updated_order(order_id, data)
 
     def get_types(self):
         return self.model.get_all_types()

@@ -7,7 +7,7 @@ from helpers.input_validation import *
 import os
 import datetime
 
-class NewOrderView:
+class ModifyOrderView:
     def __init__(self, root, controller):
         self.root = root
         self.controller = controller
@@ -38,6 +38,14 @@ class NewOrderView:
         self.status_var = StringVar()
         self.supervisor_var = StringVar()
         self.employee_var = StringVar()
+
+        # Traces
+        self.type_trace_id = None
+        self.company_trace_id = None
+        self.project_trace_id = None
+        self.status_trace_id = None
+        self.supervisor_trace_id = None
+        self.employee_trace_id = None
 
         # Data
         self.type_data = None
@@ -150,12 +158,12 @@ class NewOrderView:
         self.attachment_entry.config(state='readonly')
 
         # Triggers
-        self.type_var.trace('w',self.on_type_input)
+        self.type_var.trace('w', self.on_type_input)
         self.company_var.trace('w', self.on_company_input)
         self.project_var.trace('w', self.on_project_input)
-        self.status_var.trace('w',self.on_status_input)
-        self.supervisor_var.trace('w',self.on_supervisor_input)
-        self.employee_var.trace('w',self.on_employee_input)
+        self.status_var.trace('w', self.on_status_input)
+        self.supervisor_var.trace('w', self.on_supervisor_input)
+        self.employee_var.trace('w', self.on_employee_input)
 
         # Resetting list of options when one is selected
         self.type_entry.bind('<<ComboboxSelected>>',
@@ -455,6 +463,121 @@ class NewOrderView:
             self.attachment_entry.insert(0, attachment_path)
             self.attachment_entry.xview_moveto(1.0)
             self.attachment_entry.config(state="readonly")
+
+    def modify(self, order_id):
+        data = dict()
+        self.win.title("Modify Order")
+        self.prefill_data(order_id, data)
+        self.btn_save.configure(command=lambda: self.validate_updated_data(order_id, data))
+
+    def prefill_data(self, order_id, data):
+        data = self.controller.get_dict_order_by_id(order_id)
+        data = data[0]
+        print(data)
+        stored_date = datetime.datetime.\
+            strptime(data['_date'], '%Y-%m-%d').date()
+        self.date_entry.set_date(stored_date)
+
+        # TYPE
+        type_id = data['_type_id']
+        for index, value in enumerate(self.type_data):
+            if value[0] == type_id:
+                self.type_entry.current(index)
+                self.type_entry.event_generate("<<ComboboxSelected>>")
+                break
+        else:
+            logging.critical(f"""Modify Order: _type_id:{type_id} 
+            does not exist""")
+
+        company = self.controller.get_company_from_project_id(data['project_id'])
+        company_id = company[0][0]
+
+        # COMPANY
+        for index, value in enumerate(self.company_data):
+            if value[0] == company_id:
+                self.company_entry.current(index)
+                self.company_entry.event_generate("<<ComboboxSelected>>")
+                # PROJECT
+                project_id = data['project_id']
+                for index, value in enumerate(self.project_data):
+                    if value[0] == project_id:
+                        self.project_entry.current(index)
+                        self.project_entry.event_generate("<<ComboboxSelected>>")
+                        break
+                else:
+                    logging.critical(f"""Modify Order: project_id:{project_id} 
+                                     does not exist""")
+                break
+        else:
+            logging.critical(f"""Modify Order: company_id:{company_id} 
+                     does not exist""")
+
+        # SUPERVISOR
+        supervisor_id = data['supervisor_id']
+        for index, value in enumerate(self.supervisor_data):
+            if value[0] == supervisor_id:
+                self.supervisor_entry.current(index)
+                self.supervisor_entry.event_generate("<<ComboboxSelected>>")
+                break
+        else:
+            logging.critical(f"""Modify Order: supervisor_id:{supervisor_id} 
+                     does not exist""")
+
+        # EMPLOYEE
+        employee_id = data['employee_id']
+        for index, value in enumerate(self.employee_data):
+            if value[0] == employee_id:
+                self.employee_entry.current(index)
+                self.employee_entry.event_generate("<<ComboboxSelected>>")
+                break
+        else:
+            logging.critical(f"""Modify Order: employee_id:{employee_id} 
+                     does not exist""")
+
+        # STATUS
+        status_id = data['_status_id']
+        for index, value in enumerate(self.status_data):
+            if value[0] == status_id:
+                self.status_entry.current(index)
+                self.status_entry.event_generate("<<ComboboxSelected>>")
+                break
+        else:
+            logging.critical(f"""Modify Order: _status_id:{status_id} 
+                     does not exist""")
+
+        if data['full_address']:
+            self.address_entry.insert(0,data['full_address'])
+        else:
+            self.address_entry.insert(0, "")
+
+        if data['unit_address']:
+            self.lotblk_entry.insert(0,data['unit_address'])
+        else:
+            self.lotblk_entry.insert(0, "")
+
+        self.order_entry.insert(0,data['order_number'])
+        self.order_entry.configure(state='disabled')
+        self.amount_entry.insert(0,str("{:0.2f}".format(data["amount"]/100)))
+        self.et_entry.insert(0,data['external_tracking'])
+        self.attachment_entry.config(state="normal")
+        self.attachment_entry.delete(0,END)
+        self.attachment_entry.insert(0, str(self.controller.get_attachment_storage_path()\
+                                     + data['attachment_name']))
+        self.attachment_entry.config(state="disabled")
+        self.note_text.delete("1.0",END)
+        note_text = data['note']
+        note_text = note_text.rstrip('\n')
+        self.note_text.insert("1.0",note_text)
+
+    def validate_updated_data(self, order_id, data):
+        if self.error_label is not None:
+            self.error_label.destroy()
+
+        if self.validate_data(data):
+            print(data)
+            self.controller.store_updated_order(order_id, data)
+            self.exit_window()
+            self.controller.refresh_orders()
 
     def exit_window(self):
         self.win.destroy()

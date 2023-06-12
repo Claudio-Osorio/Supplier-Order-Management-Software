@@ -1,16 +1,9 @@
 from helpers.database import *
 
 class NewOrderModel:
-    def __init__(self):
-        pass
-
     @staticmethod
     def save_data(data):
         store_new_order(data)
-
-    @staticmethod
-    def store_updated_order(order_id, data):
-        update_new_order(order_id, data)
 
     @staticmethod
     def get_order(order_id):
