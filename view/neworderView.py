@@ -256,7 +256,6 @@ class NewOrderView:
             for employee_id, employee in self.employee_data:
                 index += 1
                 if employee_id == preferred_employee_id:
-                    list_element_index = employee_id
                     break
             self.set_entry_options(self.employee_entry, self.employee_data)
             self.employee_entry.current(index)

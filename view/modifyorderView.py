@@ -39,14 +39,6 @@ class ModifyOrderView:
         self.supervisor_var = StringVar()
         self.employee_var = StringVar()
 
-        # Traces
-        self.type_trace_id = None
-        self.company_trace_id = None
-        self.project_trace_id = None
-        self.status_trace_id = None
-        self.supervisor_trace_id = None
-        self.employee_trace_id = None
-
         # Data
         self.type_data = None
         self.company_data = None
@@ -264,8 +256,8 @@ class ModifyOrderView:
             for employee_id, employee in self.employee_data:
                 index += 1
                 if employee_id == preferred_employee_id:
-                    list_element_index = employee_id
                     break
+
             self.set_entry_options(self.employee_entry, self.employee_data)
             self.employee_entry.current(index)
             self.employee_entry.event_generate("<<ComboboxSelected>>")
@@ -473,7 +465,6 @@ class ModifyOrderView:
     def prefill_data(self, order_id, data):
         data = self.controller.get_dict_order_by_id(order_id)
         data = data[0]
-        print(data)
         stored_date = datetime.datetime.\
             strptime(data['_date'], '%Y-%m-%d').date()
         self.date_entry.set_date(stored_date)
@@ -574,7 +565,6 @@ class ModifyOrderView:
             self.error_label.destroy()
 
         if self.validate_data(data):
-            print(data)
             self.controller.store_updated_order(order_id, data)
             self.exit_window()
             self.controller.refresh_orders()

@@ -45,7 +45,7 @@ class ModifyOrderController:
         return self.new_order_controller.get_employees()
 
     def get_preferred_employee(self, project_id):
-        return self.new_order_controllerl.get_preferred_employee(project_id)
+        return self.new_order_controller.get_preferred_employee(project_id)
 
     def get_attachment_storage_path(self):
         return self.new_order_controller.get_attachment_storage_path()
