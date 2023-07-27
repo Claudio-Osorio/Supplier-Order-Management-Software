@@ -86,9 +86,12 @@ class MainModel:
         values += [params["end_date"]]
         sql += " \nAND "
 
-        if params["supervisor"] != 0:
-                sql += f"""_order.supervisor_id = ?"""
-                values += [params["supervisor"]]
+        if "supervisor" in params:
+            if params["supervisor"] != 0:
+                    sql += f"""_order.supervisor_id = ?"""
+                    values += [params["supervisor"]]
+            else:
+                one_param = False
         else:
             one_param = False
 
@@ -97,9 +100,12 @@ class MainModel:
         else:
             one_param = True
 
-        if params["employee"] != 0:
-                sql += f"""_order.employee_id = ?"""
-                values += [params["employee"]]
+        if "employee" in params:
+            if params["employee"] != 0:
+                    sql += f"""_order.employee_id = ?"""
+                    values += [params["employee"]]
+            else:
+                one_param = False
         else:
             one_param = False
 

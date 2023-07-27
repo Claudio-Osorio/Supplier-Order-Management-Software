@@ -133,6 +133,11 @@ class MainView:
         self.project_entry.current(0)
         self.type_entry.current(0)
 
+        self.supervisor_entry.event_generate("<<ComboboxSelected>>")
+        self.employee_entry.event_generate("<<ComboboxSelected>>")
+        self.company_entry.event_generate("<<ComboboxSelected>>")
+        self.project_entry.event_generate("<<ComboboxSelected>>")
+        self.type_entry.event_generate("<<ComboboxSelected>>")
 
     def show_search_menu(self):
         self.frame_search_menu1 = Frame(self.root, height=38)
@@ -648,16 +653,16 @@ class MainView:
         default_start_date = datetime.date.today().replace(month=1, day=1)
         self.start_date_entry.set_date(default_start_date)
         self.end_date_entry.set_date(datetime.date.today())
-        self.supervisor_entry.current(0)
-        self.employee_entry.current(0)
-        self.company_entry.current(0)
-        self.project_entry.current(0)
+
         self.type_entry.current(0)
         self.lotblk_entry.delete(0, END)
         self.address_entry.delete(0, END)
         self.amount_entry.delete(0, END)
         self.order_entry.delete(0, END)
         self.tracking_entry.delete(0, END)
+
+        self.fill_search_entries()
+        self.project_entry.config(state="disabled")
 
     def callback_send_selected_order(self):
         self.controller.send_orders(self.order_tree)
