@@ -592,19 +592,20 @@ class MainView:
             search_params["project"] = project_id
 
         # Lot/Blk
-        lotblk = self.lotblk_entry.get()
+        lotblk = str(self.lotblk_entry.get()).strip()
         if not blank_input(lotblk):
-            search_params["lot_blk"] = str(lotblk)
+            search_params["lot_blk"] = lotblk
 
         # Address
-        address = self.address_entry.get()
+        address = str(self.address_entry.get()).strip()
         if not blank_input(address):
-            search_params["address"] = str(address)
+            search_params["address"] = address
 
        # Amount
         amount = self.amount_entry.get()
         try:
             if not blank_input(amount):
+                amount = str(amount).strip()
                 amount = re.sub(r',', '', self.amount_entry.get())
                 amount = int(float(amount) * 100.00)
                 search_params["amount"] = amount
@@ -624,14 +625,14 @@ class MainView:
             search_params["type"] = type_id
 
         # Order
-        order_no = self.order_entry.get()
+        order_no = str(self.order_entry.get()).strip()
         if not blank_input(order_no) and validate_all_numbers(order_no):
             search_params["order"] = order_no
 
         # Tracking
         tracking = self.tracking_entry.get()
         if not blank_input(tracking):
-            search_params["tracking"] = tracking
+            search_params["tracking"] = str(tracking).strip()
 
         checkbox = {'1': self.cb_paid_status.get(),
                     '2': self.cb_short_paid_status.get(),
