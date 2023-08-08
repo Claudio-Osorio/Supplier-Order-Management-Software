@@ -76,6 +76,26 @@ def read_attachment_partial_path():
 def read_default_signature():
     return read_file('email', 'email_signature_path')
 
+
+def read_custom_search_date_range():
+    """
+    Reads the custom range of dates to be searched in the search bar
+    Parameters:
+    Returns:
+        tuple: start_date, end_date
+    """
+    return config_object["search_param"]["start_search_date_range"], \
+        config_object["search_param"]["end_search_date_range"]
+
+def read_search_date_range_mode():
+    """
+    Reads the mode of the date range to be searched in the search bar
+    Parameters:
+    Returns:
+        string: mode
+    """
+    return config_object["search_param"]["search_date_range_mode"]
+
 # UI - MUTATORS
 def store_tree_status_filter(check_box_status):
     key_list = check_box_status.keys()
@@ -117,6 +137,16 @@ def store_DDL_path(path):
 
 def store_dummy_DML_path(path):
     config_object["database"]["dummy_dml_path"] = path
+    write_config()
+
+def store_custom_search_date_range(start_date, end_date):
+    ### Stores the custom range of dates to be searched in the search bar
+    config_object["search_param"]["start_search_date_range"] = str(start_date)
+    config_object["search_param"]["end_search_date_range"] = str(end_date)
+    write_config()
+
+def store_search_date_range_mode(mode):
+    config_object["search_param"]["search_date_range_mode"] = str(mode)
     write_config()
 
 # HELPERS

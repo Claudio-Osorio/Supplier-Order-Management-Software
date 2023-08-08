@@ -118,9 +118,10 @@ class MainView:
         self.type_data = self.controller.get_types()
         self.type_data.insert(0,(0,"All"))
 
-        default_start_date = datetime.date.today().replace(month=1, day=1)
+        default_start_date, default_end_date = self.controller.get_start_and_end_search_dates()
+
         self.start_date_entry.set_date(default_start_date)
-        self.end_date_entry.set_date(datetime.date.today())
+        self.end_date_entry.set_date(default_end_date)
         self.supervisor_entry['values'] = [value[1] for value in self.supervisor_data]
         self.employee_entry['values'] = [value[1] for value in self.employee_data]
         self.company_entry['values'] = [value[1] for value in self.company_data]

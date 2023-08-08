@@ -65,6 +65,9 @@ class AppView:
                              command=self.controller.update_project)
         self.editmenu.add_command(label="Delete Project",
                                   command=self.controller.delete_project)
+        self.editmenu.add_separator()
+        self.editmenu.add_command(label="Set Default Date Range",
+                                  command=self.controller.show_default_date_range_options)
 
         self.menubar.add_cascade(label="Edit", menu=self.editmenu)
 

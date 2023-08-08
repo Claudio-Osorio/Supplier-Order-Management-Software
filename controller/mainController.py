@@ -48,6 +48,9 @@ class MainController:
     def get_types(self):
         return self.model.get_all_types()
 
+    def get_start_and_end_search_dates(self):
+        return self.model.get_start_and_end_search_dates()
+
     def read_tree_config(self):
         return self.model.read_tree_config()
 

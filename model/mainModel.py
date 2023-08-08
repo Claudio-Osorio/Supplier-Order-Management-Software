@@ -3,7 +3,7 @@ from helpers.database import *
 import pythoncom, win32com.client, threading
 from helpers.input_validation import blank_input
 from helpers.configurations import store_tree_status_filter, read_tree_status_filter
-
+from helpers.date_range_initialization import initializing_date
 
 class MainModel:
     # Returns the supervisor Id. Returns -1 if no supervisor is selected
@@ -422,3 +422,7 @@ class MainModel:
             typed_text = combobox.get().lower()
             filtered_options = [option[1] for option in options if typed_text in option[1].lower()]
             combobox['values'] = filtered_options
+
+    @staticmethod
+    def get_start_and_end_search_dates():
+        return initializing_date()
